@@ -1,0 +1,30 @@
+{
+  "name": "odin-tic-tac-toe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tailwindcss -i input.css -o output.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixblochwitz/odin-tic-tac-toe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/felixblochwitz/odin-tic-tac-toe/issues"
+  },
+  "homepage": "https://github.com/felixblochwitz/odin-tic-tac-toe#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.0.9"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.0.9"
+  }
+}
