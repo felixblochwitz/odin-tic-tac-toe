@@ -39,8 +39,8 @@ const gameBoard = (function() {
     const winner = checkForWinner();
     if (winner != null) {
       console.log("We've got a winner!");
-      resetBoard(); 
-      // might not want to keep that here, because I might want to 
+      resetBoard();
+      // might not want to keep that here, because I might want to
       // keep showing the result until a new game is started manually
     }
     return winner;
@@ -49,8 +49,24 @@ const gameBoard = (function() {
   return { boardArr, addMarker, resetBoard };
 })();
 
+function createPlayer(playerName) {
+  let score = 0;
+  const increaseScore = function() {
+    score++;
+  };
+  const getScore = function() {
+    return score;
+  };
+  return { playerName, increaseScore, getScore };
+}
+
+// have to implement the game flow below
+const gameFlow = (function() { })();
+
+/*
 console.log(gameBoard.addMarker("x", 3));
 console.log(gameBoard.addMarker("x", 4));
 console.log(gameBoard.addMarker("x", 5));
 //gameBoard.resetBoard();
 console.log(gameBoard.boardArr);
+*/
