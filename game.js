@@ -1,11 +1,12 @@
-const gameBoard = (function() {
-  let boardArr = [null, null, null, null, null, null, null, null, null];
+const gameBoard = (function () {
+  let boardArr = new Array(9).fill(null);
 
-  const resetBoard = function() {
+  const resetBoard = function () {
     boardArr.fill(null);
   };
 
-  const checkForWinner = function() {
+  const checkForWinner = function () {
+    let winner = null;
     const winningCombos = [
       [0, 1, 2], // top row
       [3, 4, 5], // middle row
@@ -23,13 +24,17 @@ const gameBoard = (function() {
         boardArr[i2] == boardArr[i3] &&
         boardArr[i1] != null
       ) {
-        return boardArr[i1];
+        winner = boardArr[i1];
+        break;
       }
     }
-    return null;
+    if (winner === null && !boardArr.includes(null)) {
+      winner = "draw";
+    }
+    return winner;
   };
 
-  const addMarker = function(marker, i) {
+  const placeMarker = function (marker, i) {
     if (boardArr[i] != null) {
       throw Error("Cannot place this shit here");
     }
@@ -37,36 +42,87 @@ const gameBoard = (function() {
     console.log(`Added marker ${marker} at index ${i}`);
     console.log(boardArr);
     const winner = checkForWinner();
-    if (winner != null) {
+    if (["x", "o"].includes(winner)) {
       console.log("We've got a winner!");
       resetBoard();
       // might not want to keep that here, because I might want to
       // keep showing the result until a new game is started manually
+    } else if (winner === "draw") {
+      console.log("The game is a draw");
+      resetBoard();
     }
     return winner;
   };
 
-  return { boardArr, addMarker, resetBoard };
+  return { boardArr, addMarker: placeMarker, resetBoard };
 })();
 
-function createPlayer(playerName) {
+function createPlayer() {
   let score = 0;
-  const increaseScore = function() {
+  let playerName;
+  let playerMarker;
+  const increaseScore = function () {
     score++;
   };
-  const getScore = function() {
+  const getScore = function () {
     return score;
   };
-  return { playerName, increaseScore, getScore };
+  const setPlayerName = function (name) {
+    playerName = name;
+  };
+  const getPLayerName = function () {
+    return playerName;
+  };
+  const setMarker = function (marker) {
+    playerMarker = marker;
+  };
+  return {
+    increaseScore,
+    getScore,
+    setPlayerName,
+    getPLayerName,
+    setMarker,
+  };
 }
 
-// have to implement the game flow below
-const gameFlow = (function() { })();
+const gameFlow = (function () {
+  let running = true;
+  const startGame = function (gameBoard) {
+    // create player one
+    const player1 = createPlayer();
+    player1.setPlayerName();
+    // create player two
+    const player2 = createPlayer();
+    player2.setPlayerName();
+    // reset board
+    gameBoard.resetBoard();
+    // start game loop
+    while (running) {
+      player1.setMarker("x");
+      player2.setMarker("o");
+    }
+  };
+  return { startGame };
+})();
+
 
 /*
-console.log(gameBoard.addMarker("x", 3));
-console.log(gameBoard.addMarker("x", 4));
+console.log("DRAW TEST")
+console.log(gameBoard.addMarker("x", 0));
+console.log(gameBoard.addMarker("o", 4));
+console.log(gameBoard.addMarker("x", 1));
+console.log(gameBoard.addMarker("o", 2));
+console.log(gameBoard.addMarker("x", 6));
+console.log(gameBoard.addMarker("o", 3));
 console.log(gameBoard.addMarker("x", 5));
-//gameBoard.resetBoard();
-console.log(gameBoard.boardArr);
+console.log(gameBoard.addMarker("o", 7));
+console.log(gameBoard.addMarker("x", 8));
+console.log("WINNER TEST")
+console.log(gameBoard.addMarker("x", 0));
+console.log(gameBoard.addMarker("o", 4));
+console.log(gameBoard.addMarker("x", 1));
+console.log(gameBoard.addMarker("o", 2));
+console.log(gameBoard.addMarker("x", 3));
+console.log(gameBoard.addMarker("o", 6));
 */
+
