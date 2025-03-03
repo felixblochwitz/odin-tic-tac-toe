@@ -76,6 +76,9 @@ function createPlayer() {
   const setMarker = function (marker) {
     playerMarker = marker;
   };
+  const getMarker = function () {
+    return playerMarker;
+  };
   return {
     increaseScore,
     getScore,
@@ -86,25 +89,41 @@ function createPlayer() {
 }
 
 const gameFlow = (function () {
+  let round = 0;
   let running = true;
   const startGame = function (gameBoard) {
     // create player one
     const player1 = createPlayer();
     player1.setPlayerName();
+    player1.setMarker("x");
     // create player two
     const player2 = createPlayer();
     player2.setPlayerName();
+    player2.setMarker("o");
     // reset board
     gameBoard.resetBoard();
-    // start game loop
+    // create this for player order
+    let starting = player1;
+    let turn = starting;
     while (running) {
-      player1.setMarker("x");
-      player2.setMarker("o");
+      gameBoard.placeMarker(turn.getMarker(), index);
+      if (turn === player1) {
+        turn = player2;
+      } else {
+        turn = player1;
+      }
+      if (!gameBoard.checkForWinner() === null) {
+        running = false;
+        if (starting === player1) {
+          starting = player2;
+        } else {
+          starting = player1;
+        }
+      }
     }
   };
   return { startGame };
 })();
-
 
 /*
 console.log("DRAW TEST")
@@ -125,4 +144,3 @@ console.log(gameBoard.addMarker("o", 2));
 console.log(gameBoard.addMarker("x", 3));
 console.log(gameBoard.addMarker("o", 6));
 */
-
