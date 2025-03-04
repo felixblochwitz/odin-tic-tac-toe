@@ -109,7 +109,6 @@ const gameFlow = (function(gameBoard) {
 
 const DOMInteraction = (function(gameFlow) {
   const squares = document.getElementsByClassName("square");
-  console.log(squares);
 
   for (let square of squares) {
     square.addEventListener("click", (event) => {
