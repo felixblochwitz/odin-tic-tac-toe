@@ -1,11 +1,11 @@
-const gameBoard = (function () {
+const gameBoard = (function() {
   let boardArr = new Array(9).fill(null);
 
-  const resetBoard = function () {
+  const resetBoard = function() {
     boardArr.fill(null);
   };
 
-  const checkForWinner = function () {
+  const checkForWinner = function() {
     let winner = null;
     const winningCombos = [
       [0, 1, 2], // top row
@@ -34,7 +34,7 @@ const gameBoard = (function () {
     return winner;
   };
 
-  const placeMarker = function (marker, i) {
+  const placeMarker = function(marker, i) {
     if (boardArr[i] != null) {
       throw Error("Cannot place this shit here");
     }
@@ -44,39 +44,35 @@ const gameBoard = (function () {
     const winner = checkForWinner();
     if (["x", "o"].includes(winner)) {
       console.log("We've got a winner!");
-      resetBoard();
-      // might not want to keep that here, because I might want to
-      // keep showing the result until a new game is started manually
     } else if (winner === "draw") {
       console.log("The game is a draw");
-      resetBoard();
     }
     return winner;
   };
 
-  return { boardArr, addMarker: placeMarker, resetBoard };
+  return { boardArr, placeMarker, resetBoard, checkForWinner };
 })();
 
 function createPlayer() {
   let score = 0;
   let playerName;
   let playerMarker;
-  const increaseScore = function () {
+  const increaseScore = function() {
     score++;
   };
-  const getScore = function () {
+  const getScore = function() {
     return score;
   };
-  const setPlayerName = function (name) {
+  const setPlayerName = function(name) {
     playerName = name;
   };
-  const getPLayerName = function () {
+  const getPLayerName = function() {
     return playerName;
   };
-  const setMarker = function (marker) {
+  const setMarker = function(marker) {
     playerMarker = marker;
   };
-  const getMarker = function () {
+  const getMarker = function() {
     return playerMarker;
   };
   return {
@@ -85,45 +81,48 @@ function createPlayer() {
     setPlayerName,
     getPLayerName,
     setMarker,
+    getMarker,
   };
 }
 
-const gameFlow = (function () {
-  let round = 0;
-  let running = true;
-  const startGame = function (gameBoard) {
-    // create player one
+const gameFlow = (function(gameBoard) {
+  // let round = 1; not used yet, but might use in the future
+  const player1 = createPlayer();
+  player1.setMarker("x");
+  const player2 = createPlayer();
+  player2.setMarker("o");
+  let turn = player1;
+
+  const getTurn = function() {
     const player1 = createPlayer();
     player1.setPlayerName();
     player1.setMarker("x");
-    // create player two
-    const player2 = createPlayer();
-    player2.setPlayerName();
-    player2.setMarker("o");
-    // reset board
-    gameBoard.resetBoard();
-    // create this for player order
-    let starting = player1;
-    let turn = starting;
-    while (running) {
-      gameBoard.placeMarker(turn.getMarker(), index);
-      if (turn === player1) {
-        turn = player2;
-      } else {
-        turn = player1;
-      }
-      if (!gameBoard.checkForWinner() === null) {
-        running = false;
-        if (starting === player1) {
-          starting = player2;
-        } else {
-          starting = player1;
-        }
-      }
-    }
+    return turn;
   };
-  return { startGame };
-})();
+
+  const changeTurn = function() {
+    turn = turn === player1 ? player2 : player1;
+  };
+
+  return { getTurn, changeTurn };
+})(gameBoard);
+
+const DOMInteraction = (function(gameFlow) {
+  const squares = document.getElementsByClassName("square");
+  console.log(squares);
+
+  for (let square of squares) {
+    square.addEventListener("click", (event) => {
+      if (square.childNodes.length === 0) {
+        const icon = document.createElement("img");
+        icon.src = `img/${gameFlow.getTurn().getMarker()}.png`;
+        event.target.appendChild(icon);
+        event.target.classList.remove("hover:bg-stone-300");
+        gameFlow.changeTurn();
+      }
+    });
+  }
+})(gameFlow);
 
 /*
 console.log("DRAW TEST")
@@ -144,3 +143,6 @@ console.log(gameBoard.addMarker("o", 2));
 console.log(gameBoard.addMarker("x", 3));
 console.log(gameBoard.addMarker("o", 6));
 */
+
+//gameFlow.startGame(gameBoard);
+//console.log(gameFlow.getTurn())
